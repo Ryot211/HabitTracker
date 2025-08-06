@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Habit Tracker{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1><a href="/">Habit Tracker</a></h1>
+        {% if user.is_authenticated%}
+            <p>Hola, {{ user.username }} | <a href="{% url 'logout' %}">Cerrar sesión</a></p>  
+        {% else %}
+            <a href="{% url 'login' %}">Iniciar Sesión</a>
+            <a href="{% url 'register' %}">Registrarme</a>
+        {% endif %} 
+        <hr> 
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    
+</body>
+</html>
