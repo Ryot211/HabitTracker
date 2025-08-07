@@ -12,6 +12,10 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'habits/register.html', {'form':form})
+def landing_page(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+    return render(request, 'habits/landing.html')
 @login_required
 def home(request):
     return render(request, 'habits/home.html')
