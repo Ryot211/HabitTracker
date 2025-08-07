@@ -6,7 +6,7 @@
     <h2>Registro de Usuarios</h2>
     <form method="post">
         {% csrf_token %}
-        {{from.as_p}}
+         {{form.as_p}}
         <button type="submit" >Registrarse</button>
     </form>
 {% endblock %}

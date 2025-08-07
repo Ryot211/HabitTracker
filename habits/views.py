@@ -1,4 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from .forms import HabitForm
 from django.shortcuts import render, redirect
 
 def register(request):
@@ -10,4 +12,20 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'habits/register.html', {'form':form})
-# Create your views here.
+@login_required
+def home(request):
+    return render(request, 'habits/home.html')
+
+@login_required
+def create_habit(request):
+    if request.method == 'POST':
+        form = HabitForm(request.POST)
+        if form.is_valid():
+            habit =form.save(commit=False)
+            habit.user=request.user
+            habit.save()
+            return redirect('habit_list')
+    else:
+        form =HabitForm
+    return render(request, 'habits/create_habit.html',{'form':form})
+

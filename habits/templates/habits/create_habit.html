@@ -1,0 +1,12 @@
+{% extends 'habits/base.html' %}
+
+{% block title %}Crear Hábito {% endblock %}
+
+{% block content %}
+    <h2>Crear nuevo hábito</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit">Guardar</button>
+    </form>
+{% endblock %}
