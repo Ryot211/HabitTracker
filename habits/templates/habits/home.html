@@ -1,8 +1,61 @@
 {% extends 'habits/base.html' %}
+{% load extras %}
 
-{% block title %}Inicio{% endblock %}
+
+{% block title %}Mis Hábitos{% endblock %}
 
 {% block content %}
-    <h2>Bienvenido a Habit Tracker</h2>
-    <p>Aqui veras tus hábitos proximamente</p>
+    <h2>Mis Hábitos</h2>
+    {% if habits %}
+        <ul>
+            {% for habit in habits %}
+            <li>
+                <strong>{{ habit.name }}</strong> - {{ habit.get_frequency_display }}
+                <br>
+                <small>{{ habit.description }}</small>
+                <table border="1" style="margin-top: 1rem," >
+                    <tr>
+                        <th>Día</th>
+                        {% for dia in dias %}
+                        <td>{{ dia|date:"D d/m" }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Estado</th>
+                 {% with historial|get_item:habit.id as historial_habit %}
+                    {% for completado in historial_habit %}
+                        <td style="text-align: center;">
+                            {% if completado %}
+                                ✅
+                            {% else %}
+                                ❌
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                {% endwith %}
+
+
+                    </tr>
+
+                </table>
+                <br>
+                {% if habit.id in completados_hoy %}
+                    <span style="color: green; font-weight: bold;" >Completado Hoy !!</span>
+                {% else %}
+                    <form  method="post" action="{% url 'completar_habito' habit.id %}">
+                        {% csrf_token %}
+                        <button type="submit" >Marcar como completado</button>
+                    </form>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>Aún no has creado ningún hábito</p>
+        <a href="{% url 'create_habit' %}">Crear un nuevo hábito</a>
+        {% endif %}
 {% endblock %}
+
+
+
+
