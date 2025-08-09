@@ -89,3 +89,25 @@ form button {
 form button:hover {
     background-color: #16a085;
 }
+
+/* Barra de progrso de cada habito */
+.progress-container {
+    background: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 20px;
+    width: 200px;
+}
+
+.progress-bar {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    transition: width 0.5s ease;
+}
+
+

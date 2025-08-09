@@ -43,33 +43,36 @@ def eliminar_habit(request, habit_id):
 
 @login_required
 def home(request):
+   
+    hoy = date.today()
+    dias = [hoy - timedelta(days=i) for i in range(6,-1,-1) ]
     habits = Habit.objects.filter(user=request.user).order_by('-created_at')
-    today = date.today()
 
     completados_hoy =HabitEntry.objects.filter(
         habit__in= habits,
-        date=today,
+        date=hoy,
         completed=True
     ).values_list('habit_id', flat=True)
-    hoy = date.today()
-    dias = [hoy - timedelta(days=i) for i in range(6,-1,-1)]
-
 
     historial = {}
-
+    porcentajes = {}
+    
     for habit in habits:
         entradas = HabitEntry.objects.filter(
             habit=habit,
             date__in=dias
         ).values_list('date','completed')
 
-        completados = {fecha: completo for fecha, completo in entradas }
+        completados_dict = {fecha: completo for fecha, completo in entradas }
 
-        historial[habit.id]= [
-            completados.get(d, False) for d in dias
-        ]
+        completados = [completados_dict.get(d,False)for d in dias]
+        historial[habit.id]=completados
 
-    return render(request, 'habits/home.html',{'habits':habits,'completados_hoy':completados_hoy,'dias':dias,'historial':historial})
+        total= len(completados)
+        porcentaje = int((sum(completados)/total)*100) if total> 0 else 0
+        porcentajes[habit.id]=porcentaje
+     
+    return render(request, 'habits/home.html',{'habits':habits,'completados_hoy':completados_hoy,'dias':dias,'historial':historial,"porcentajes":porcentajes})
 
 @login_required
 def create_habit(request):
