@@ -11,13 +11,20 @@
             {% for habit in habits %}
             <li>
                 <strong>{{ habit.name }}</strong> - {{ habit.get_frequency_display }}
+                       <td>
+    <a href="{% url 'editar_habit' habit.id %}">✏️ Editar</a> |
+    <a href="{% url 'eliminar_habit' habit.id %}">🗑 Eliminar</a>
+</td>
                 <br>
                 <small>{{ habit.description }}</small>
                 <table border="1" style="margin-top: 1rem," >
+             
+
                     <tr>
                         <th>Día</th>
                         {% for dia in dias %}
                         <td>{{ dia|date:"D d/m" }}</td>
+                        
                         {% endfor %}
                     </tr>
                     <tr>

@@ -1,0 +1,12 @@
+{% extends 'habits/base.html' %}
+
+{% block content %}
+<h2>editar hábito</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" > Actualizar</button>
+    <a href="{% url 'home' %}">Cancelar</a>
+</form>
+{% endblock %}

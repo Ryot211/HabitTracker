@@ -4,7 +4,7 @@ from .forms import HabitForm
 from datetime import date, timedelta
 from django.http import HttpResponseRedirect
 from .models import Habit, HabitEntry
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 
 def register(request):
@@ -20,6 +20,24 @@ def landing_page(request):
     if request.user.is_authenticated:
         return redirect('home')
     return render(request, 'habits/landing.html')
+
+def editar_habit(request, habit_id):
+    habit = get_object_or_404(Habit, id=habit_id, user=request.user)
+    if request.method == 'POST':
+        form = HabitForm(request.POST, instance=habit)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = HabitForm(instance=habit)
+    return render(request, 'habits/editar_habit.html',{'form':form})
+
+def eliminar_habit(request, habit_id):
+    habit = get_object_or_404(Habit, id=habit_id, user=request.user)
+    if request.method == 'POST':
+        habit.delete()
+        return redirect('home')
+    return render(request, 'habits/eliminar_habit.html',{'habit':habit})
 
 
 
