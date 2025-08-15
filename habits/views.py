@@ -46,8 +46,22 @@ def home(request):
    
     hoy = date.today()
     dias = [hoy - timedelta(days=i) for i in range(6,-1,-1) ]
+
+    # Base queryset
     habits = Habit.objects.filter(user=request.user).order_by('-created_at')
 
+    # Leer y validr el filtro
+    selected_frequency = request.GET.get('frecuencia')  # el parámetro GET puede llamarse 'frecuencia', eso está bien
+
+    # OBTENER CHOICES DEL CAMPO CORRECTO
+    frequency_field = Habit._meta.get_field('frequency')  # <-- NO 'frecuency'
+    frequency_choices = list(frequency_field.choices)
+    allowed_values = {value for value, _ in frequency_choices}
+
+    # APLICAR FILTRO SI ES VÁLIDO
+    if selected_frequency in allowed_values:
+        habits = habits.filter(frequency=selected_frequency) 
+    # Completrados el dia de hoy (esto es ya cuando el queryset esta siendo usado para filtrar)
     completados_hoy =HabitEntry.objects.filter(
         habit__in= habits,
         date=hoy,
@@ -71,8 +85,23 @@ def home(request):
         total= len(completados)
         porcentaje = int((sum(completados)/total)*100) if total> 0 else 0
         porcentajes[habit.id]=porcentaje
+
+        # recordatorios simulados (solo de la lista filtrada)
+        recordatorios = [
+            f"Recueda completar tu hábito: {habit.name}"
+            for habit in habits
+            if habit.id not in completados_hoy
+        ]
      
-    return render(request, 'habits/home.html',{'habits':habits,'completados_hoy':completados_hoy,'dias':dias,'historial':historial,"porcentajes":porcentajes})
+    return render(request, 'habits/home.html',{'habits':habits,
+                                               'completados_hoy':completados_hoy,
+                                               'dias':dias,
+                                               'historial':historial,
+                                               "porcentajes":porcentajes,
+                                               'recordatorios': recordatorios,
+                                               'frequency_choices': frequency_choices,         # para armar el <select>
+                                               'selected_frequency': selected_frequency
+                                               })
 
 @login_required
 def create_habit(request):

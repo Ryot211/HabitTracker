@@ -7,7 +7,23 @@
 
 {% block title %}Mis Hábitos{% endblock %}
 
+
+
 {% block content %}
+<form method="get" action="{% url 'home' %}" style="margin: 10px 0;">
+  <label for="frecuencia"><strong>Filtrar por frecuencia:</strong></label>
+  <select id="frecuencia" name="frecuencia" onchange="this.form.submit()">
+    <option value="">Todas</option>
+    {% for value, label in frequency_choices %}
+      <option value="{{ value }}" {% if value == selected_frequency %}selected{% endif %}>
+        {{ label }}
+      </option>
+    {% endfor %}
+  </select>
+  {% if selected_frequency %}
+    <a href="{% url 'home' %}" style="margin-left: 8px;">Quitar filtro</a>
+  {% endif %}
+</form>
     <h2>Mis Hábitos</h2>
     {% if habits %}
         <ul>
