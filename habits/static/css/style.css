@@ -201,7 +201,7 @@ button {
 }
 
 button:hover {
-    background-color: #43a047;
+    background-color: #ffffff;
 }
 
 /*Boton para crear un nuevo habito*/
@@ -214,7 +214,7 @@ button:hover {
     /* Aplica un degradado lineal de color verde de 135 grados, 
        pasando de #1abc9c a #16a085 para darle un efecto elegante. */
 
-    color: white;
+    color: rgb(255, 255, 255);
     /* Color del texto del botón. */
 
     padding: 0.75rem 1.5rem;
@@ -283,7 +283,7 @@ button:hover {
 /* Modo oscuro */
 body.dark-mode {
     background-color: #121212;
-    color: #e0e0e0;
+    color: #ffffff;
 }
 
 body.dark-mode header {
@@ -296,11 +296,11 @@ body.dark-mode main {
 }
 
 body.dark-mode a {
-    color: #4dd0e1;
+    color: #ffffff;
 }
 
 body.dark-mode a:hover {
-    color: #00acc1;
+    color: #a79c9c;
 }
 
 body.dark-mode .habit-card {

@@ -40,7 +40,7 @@ def eliminar_habit(request, habit_id):
     return render(request, 'habits/eliminar_habit.html',{'habit':habit})
 
 
-@login_required
+@login_required(login_url='/login/')
 def toggle_dark_mode(request):
     response = redirect(request.META.get('HTTP_REFERER', 'home'))
     dark_mode = request.COOKIES.get('dark_mode') == 'true'
