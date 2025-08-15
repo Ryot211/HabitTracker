@@ -3,97 +3,78 @@
 {% load static %}
 {% load custom_filters %}
 
-
-
 {% block title %}Mis Hábitos{% endblock %}
 
-
-
 {% block content %}
-<form method="get" action="{% url 'home' %}" style="margin: 10px 0;">
-  <label for="frecuencia"><strong>Filtrar por frecuencia:</strong></label>
-  <select id="frecuencia" name="frecuencia" onchange="this.form.submit()">
-    <option value="">Todas</option>
-    {% for value, label in frequency_choices %}
-      <option value="{{ value }}" {% if value == selected_frequency %}selected{% endif %}>
-        {{ label }}
-      </option>
-    {% endfor %}
-  </select>
-  {% if selected_frequency %}
-    <a href="{% url 'home' %}" style="margin-left: 8px;">Quitar filtro</a>
-  {% endif %}
-</form>
+<div class="header-container">
     <h2>Mis Hábitos</h2>
-    {% if habits %}
-        <ul>
-            {% for habit in habits %}
-            <li>
-                <strong>{{ habit.name }}</strong> - {{ habit.get_frequency_display }}
-                       <td>
-                            <a href="{% url 'editar_habit' habit.id %}">✏️ Editar</a> |
-                            <a href="{% url 'eliminar_habit' habit.id %}">🗑 Eliminar</a>
-                        </td>
-                <br>
-                
-                <small>{{ habit.description }}</small>
-                <table border="1" style="margin-top: 1rem," >
-             
-                    <div class="progress-container">
-                    <div class="progress-bar"
-                        style="width: {{ porcentajes|dict_get:habit.id }}%;
-                                background-color:
-                                    {% if porcentajes|dict_get:habit.id >= 80 %}#4caf50
-                                    {% elif porcentajes|dict_get:habit.id >= 50 %}#ffeb3b
-                                    {% else %}#f44336{% endif %};">
-                        {{ porcentajes|dict_get:habit.id }}%
-                    </div>
-                </div>
-
-
-                    <tr>
-                        <th>Día</th>
-                        {% for dia in dias %}
-                        <td>{{ dia|date:"D d/m" }}</td>
-                        
-                        {% endfor %}
-                    </tr>
-                    <tr>
-                        <th>Estado</th>
-                 {% with historial|get_item:habit.id as historial_habit %}
-                    {% for completado in historial_habit %}
-                        <td style="text-align: center;">
-                            {% if completado %}
-                                ✅
-                            {% else %}
-                                ❌
-                            {% endif %}
-                        </td>
-                    {% endfor %}
-                {% endwith %}
-
-
-                    </tr>
-
-                </table>
-                <br>
-                {% if habit.id in completados_hoy %}
-                    <span style="color: green; font-weight: bold;" >Completado Hoy !!</span>
-                {% else %}
-                    <form  method="post" action="{% url 'completar_habito' habit.id %}">
-                        {% csrf_token %}
-                        <button type="submit" >Marcar como completado</button>
-                    </form>
-                {% endif %}
-            </li>
+    <form method="get" action="{% url 'home' %}">
+        <label for="frecuencia"><strong>Filtrar:</strong></label>
+        <select id="frecuencia" name="frecuencia" onchange="this.form.submit()">
+            <option value="">Todas</option>
+            {% for value, label in frequency_choices %}
+                <option value="{{ value }}" {% if value == selected_frequency %}selected{% endif %}>
+                    {{ label }}
+                </option>
             {% endfor %}
-        </ul>
-        {% else %}
-        <p>Aún no has creado ningún hábito</p>
-        <a href="{% url 'create_habit' %}">Crear un nuevo hábito</a>
+        </select>
+        {% if selected_frequency %}
+            <a href="{% url 'home' %}">Quitar filtro</a>
         {% endif %}
+    </form>
+</div>
+<br>
+<div>
+    <p>
+    <a href="{% url 'create_habit' %}" class="btn-create">Crear uno nuevo</a>
+</p>
+</div>
+<br><br>
+{% if habits %}
+    {% for habit in habits %}
+        <div class="habit-card">
+            <div class="habit-title">{{ habit.name }}</div>
+            <div class="habit-desc">{{ habit.description }}</div>
+        
+            <div class="progress-container">
+                <div class="progress-bar"
+                     style="width: {{ porcentajes|dict_get:habit.id }}%;
+                            background: linear-gradient(90deg, #4caf50, #81c784);">
+                    {{ porcentajes|dict_get:habit.id }}%
+                </div>
+            </div>
+    <div class="habit-actions">
+                <a href="{% url 'editar_habit' habit.id %}" class="btn-edit">✏️ Editar</a>
+                <a href="{% url 'eliminar_habit' habit.id %}" class="btn-delete">🗑 Eliminar</a>
+            </div>
+            <table class="habit-table">
+                <tr>
+                    <th>Día</th>
+                    {% for dia in dias %}
+                        <td>{{ dia|date:"D d/m" }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Estado</th>
+                    {% with historial|get_item:habit.id as historial_habit %}
+                        {% for completado in historial_habit %}
+                            <td>{% if completado %}✅{% else %}❌{% endif %}</td>
+                        {% endfor %}
+                    {% endwith %}
+                </tr>
+            </table>
+
+            {% if habit.id in completados_hoy %}
+                <p style="color: green; font-weight: bold;">Completado Hoy ✅</p>
+            {% else %}
+                <form method="post" action="{% url 'completar_habito' habit.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Marcar como completado</button>
+                </form>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No tienes hábitos todavía. <a href="{% url 'create_habit' %}">Crear uno nuevo</a></p>
+{% endif %}
 {% endblock %}
-
-
-
-

@@ -40,6 +40,12 @@ def eliminar_habit(request, habit_id):
     return render(request, 'habits/eliminar_habit.html',{'habit':habit})
 
 
+@login_required
+def toggle_dark_mode(request):
+    response = redirect(request.META.get('HTTP_REFERER', 'home'))
+    dark_mode = request.COOKIES.get('dark_mode') == 'true'
+    response.set_cookie('dark_mode', 'false' if dark_mode else 'true', max_age=365*24*60*60)
+    return response
 
 @login_required
 def home(request):
@@ -58,9 +64,8 @@ def home(request):
     frequency_choices = list(frequency_field.choices)
     allowed_values = {value for value, _ in frequency_choices}
 
-    # APLICAR FILTRO SI ES VÁLIDO
     if selected_frequency in allowed_values:
-        habits = habits.filter(frequency=selected_frequency) 
+        habits = habits.filter(frequency= selected_frequency)
     # Completrados el dia de hoy (esto es ya cuando el queryset esta siendo usado para filtrar)
     completados_hoy =HabitEntry.objects.filter(
         habit__in= habits,

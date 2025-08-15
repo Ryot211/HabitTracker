@@ -8,5 +8,6 @@ urlpatterns= [
     path('completar/<int:habit_id>',views.completar_habito, name='completar_habito'),
     path('editar/<int:habit_id>',views.editar_habit, name='editar_habit'),
     path('eliminar/<int:habit_id>', views.eliminar_habit, name='eliminar_habit'),
+    path('toggle-dark-mode/', views.toggle_dark_mode, name='toggle_dark_mode'),
 
 ]
